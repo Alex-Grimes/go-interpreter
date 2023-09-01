@@ -1,3 +1,3 @@
-module github.com/Alex-Grimes/go-interpreter
+module monkey
 
 go 1.18
