@@ -50,6 +50,16 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		// If the character is not one of the above, we need to check if it's a letter
+		// or a digit. If it is, we read the whole identifier or number and see if it's
+		// a keyword. Otherwise we treat it as illegal.
+		if isLetter(l.ch) {
+			tok.Literal = l.readIdentifier()
+			return tok
+		} else {
+			tok = newToken(token.ILLEGAL, l.ch)
+		}
 	}
 
 	l.readChar()
@@ -60,4 +70,21 @@ func (l *Lexer) NextToken() token.Token {
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	// Create a new token
 	return token.Token{Type: tokenType, Literal: string(ch)}
+}
+
+func (l *Lexer) readIdentifier() string {
+	// Read the whole identifier
+	position := l.position
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+func isLetter(ch byte) bool {
+	// Check if the character is a letter
+	// ASCII code for "A" is 65 and "Z" is 90
+	// ASCII code for "a" is 97 and "z" is 122
+	// ASCII code for "_" is 95
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
