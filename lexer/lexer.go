@@ -65,9 +65,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
-		// If the character is not one of the above, we need to check if it's a letter
-		// or a digit. If it is, we read the whole identifier or number and see if it's
-		// a keyword. Otherwise we treat it as illegal.
+
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIndent(tok.Literal)
